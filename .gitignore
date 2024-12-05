@@ -3,3 +3,4 @@ data_analysis_project/data_analysis_app/__pycache__/
 data_analysis_project/__pycache__/
 data_analysis_project/data_analysis_project/__pycache__/
 data_analysis_project/data_analysis_app/migrations/
+data_analysis_project/db.sqlite3
