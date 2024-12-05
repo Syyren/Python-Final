@@ -1,4 +1,6 @@
 from django.http import JsonResponse
+from django.utils.decorators import decorator_from_middleware
+from django.views.decorators.cache import never_cache
 from django.shortcuts import render
 from django.utils.safestring import mark_safe
 
@@ -12,7 +14,7 @@ def index(request):
 def frog(request):
     return render(request, "forg.html", {"forg" : mark_safe(forg())})
 
-
+@never_cache
 def get_titles_data(request):
     #processing csv
     process_data()
@@ -31,7 +33,13 @@ def get_titles_data(request):
             'listed_in': [category.listed_in_name for category in title.listed_in.all()],
             'description': title.description,
             })
-    return JsonResponse({'titles': data})
+    
+    #disable caching - remove after developemnt
+    response = JsonResponse({'titles': data})
+    response['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
+    response['Pragma'] = 'no-cache'
+    response['Expires'] = '0'
+    return response
     
 def view_titles(request):
     return render(request, "view_titles.html")
