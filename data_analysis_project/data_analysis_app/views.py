@@ -28,7 +28,7 @@ for _, row in df.iterrows():
         continue
 
     #saving primary Titles table
-    title_obj = Title.objects.create(
+    title_obj = Title(
         id=row['show_id'],
         type=row['type'],
         title=row['title'],
@@ -111,4 +111,4 @@ def view_titles(request):
     #db query for titles
                            #prefetching relational data
     titles = Title.objects.prefetch_related('directors', 'casts', 'listed_in').all()
-    return render(request, "view_title.html", {"titles":titles})
+    return render(request, "view_titles.html", {"titles":titles})
