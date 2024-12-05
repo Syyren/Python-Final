@@ -1,5 +1,6 @@
 from datetime import datetime
-from models import Title, Director, Cast, ListedIn, TitlesDirectors, TitlesCasts, TitlesListedIns
+from .models import Title, Director, Cast, ListedIn, TitlesDirectors, TitlesCasts, TitlesListedIns
+import pandas as pd
 
 def str_to_list(string : str):
     list = []
@@ -88,8 +89,6 @@ def process_data():
                 cast = casts_existing[cast_name]      
                 #creating relationship in TitlesCasts
                 titles_casts_to_create.append(TitlesCasts(title=title_obj, cast=cast))
-        
-
 
         if row['listed_in']:
             listed_ins = str(row['listed_in']).split(',')
