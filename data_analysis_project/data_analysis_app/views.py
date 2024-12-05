@@ -31,5 +31,5 @@ def index(request):
     return render(request, "index.html")
 
 def frog(request):
-    return render(request, "forg.html", {"name" : "Steven", "forg" : mark_safe(forg())})
+    return render(request, "forg.html", {"forg" : mark_safe(forg())})
 
