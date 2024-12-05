@@ -1,0 +1,22 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="style.css" />
+    <title>{% block title %}Netflix Titles{% endblock %}</title>
+  </head>
+  <body>
+    <nav>
+      {% block navbar %}
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/forg/">Forg</a></li>
+      </ul>
+      {% endblock navbar %}
+    </nav>
+    {% block content %} {% endblock content %}
+    <footer>
+        <div class="footer">
+          <p>CPRO 2201 - Final Project - McGrandle, de Frece</p>
+        <div>
+    </footer>
+  </body>
+</html>

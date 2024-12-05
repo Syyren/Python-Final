@@ -27,6 +27,9 @@ for _, row in df.iterrows():
 
 print(titles[1].title)
 
+def index(request):
+    return render(request, "index.html")
+
 def frog(request):
     return render(request, "forg.html", {"name" : "Steven", "forg" : mark_safe(forg())})
 
