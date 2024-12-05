@@ -1,3 +1,6 @@
 from django.shortcuts import render
+from .meme import forg
 
-# Create your views here.
+from django.http import HttpResponse
+def frog(request):
+    return HttpResponse(forg())
