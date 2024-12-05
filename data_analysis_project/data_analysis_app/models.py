@@ -27,3 +27,14 @@ class Title():
         self.duration : int = convert_duration(duration)
         self.listed_in : list = str_to_list(listed_in)
         self.description : str = description
+
+    def getDurationAsString(self):
+        duration_string = f"{self.duration}"
+        s = ""
+        if self.duration > 1:
+            s = "s"
+        if self.type == "Movie":
+            duration_string += f" min{s}"
+        elif self.type == "TV Show":
+            duration_string += f" Season{s}"
+        return duration_string
