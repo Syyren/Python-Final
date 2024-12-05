@@ -1,5 +1,6 @@
-<!-- Test View -->
+{% extends 'data_analysis_app/index.html' %}
 
-<h1>Hi there {{ name }}</h1>
-
-{{ forg }} {% include "footer.html" %}
+{% block content %}
+    <h1>Hi there {{ name }}</h1>
+    {{ forg }}
+{% endblock content %}
