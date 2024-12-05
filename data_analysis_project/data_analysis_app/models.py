@@ -18,14 +18,14 @@ class Title():
         self.__id : str = id
         self.type = type
         self.title : str = title
-        self.director : list = str_to_list(director)
-        self.cast : list = str_to_list(cast)
-        self.country : list = str_to_list(country)
-        self.date_added : date = str_to_date(date_added)
+        self.director : list = str_to_list(str(director))
+        self.cast : list = str_to_list(str(cast))
+        self.country : list = str_to_list(str(country))
+        self.date_added : date = str_to_date(str(date_added))
         self.release_year : int = release_year
         self.rating : str = rating
-        self.duration : int = convert_duration(duration)
-        self.listed_in : list = str_to_list(listed_in)
+        self.duration : int = convert_duration(str(duration))
+        self.listed_in : list = str_to_list(str(listed_in))
         self.description : str = description
 
     def getDurationAsString(self):
