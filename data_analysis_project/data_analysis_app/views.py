@@ -1,6 +1,5 @@
 from django.shortcuts import render
 from django.utils.safestring import mark_safe
-from datetime import datetime
 import pandas as pd
 
 from .qol import str_to_date, convert_duration
@@ -11,16 +10,11 @@ def process_data():
     df = pd.read_csv("data_analysis_app/netflix_titles.csv")
 
     #pre-fetching related data so I'm not hitting up the db every millisecond during duplicate check
-    try:
-        existing_titles = {title.id for title in Title.objects.all()}
-        directors_existing = {director.director_name: director for director in Director.objects.all()}
-        casts_existing = {cast.cast_name: cast for cast in Cast.objects.all()}
-        listed_ins_existing = {listed_in.listed_in_name: listed_in for listed_in in ListedIn.objects.all()}
-    except:
-        existing_titles = ()
-        directors_existing = {}
-        casts_existing = {}
-        listed_ins_existing = {}
+    existing_titles = {title.id for title in Title.objects.all()}
+    directors_existing = {director.director_name: director for director in Director.objects.all()}
+    casts_existing = {cast.cast_name: cast for cast in Cast.objects.all()}
+    listed_ins_existing = {listed_in.listed_in_name: listed_in for listed_in in ListedIn.objects.all()}
+
 
     # making lists for bulk create so we're not saving to the db every row
     titles_to_create = []
