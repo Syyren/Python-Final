@@ -26,9 +26,9 @@ class Title(models.Model):
     description = models.TextField(blank=True, null=True)
 
     #Handling Many to Many Relationships
-    directors = models.ManyToManyField(Director, through='ShowsDirectors')
-    casts = models.ManyToManyField(Cast, through='ShowsCasts')
-    listed_in = models.ManyToManyField(ListedIn, through='ShowsListedIns')
+    directors = models.ManyToManyField(Director, through='TitlesDirectors')
+    casts = models.ManyToManyField(Cast, through='TitlesCasts')
+    listed_in = models.ManyToManyField(ListedIn, through='TitlesListedIns')
 
 
 #Intermediary Tables
