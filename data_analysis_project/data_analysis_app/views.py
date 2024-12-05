@@ -30,3 +30,5 @@ print(titles[1].title)
 def frog(request):
     return render(request, "forg.html", {"name" : "Steven", "forg" : mark_safe(forg())})
 
+def view_titles(request):
+    return render(request, "view_title.html", {"titles":titles})
