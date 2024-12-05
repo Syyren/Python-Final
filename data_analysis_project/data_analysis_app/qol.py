@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime
 
 def str_to_list(string : str):
     list = []
@@ -9,13 +9,15 @@ def str_to_list(string : str):
 
 def str_to_date(string : str):
     date = None
-    if string:
-         date = datetime.strptime(string, "%B %d, %Y").date()
+    if string and string != "nan":
+         date = datetime.strptime(string.strip(), "%B %d, %Y").date()
     return date
 
-def convert_duration(string : str):
-    duration = 0
+def convert_duration(string : str): 
     list = string.split(" ")
-    if list:
-        duration = int(list[0])
+    try:
+        if list:
+            duration = int(list[0].strip())
+    except:
+        duration = 0
     return duration
