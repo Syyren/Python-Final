@@ -29,3 +29,4 @@ print(titles[1].title)
 
 def frog(request):
     return render(request, "forg.html", {"name" : "Steven", "forg" : mark_safe(forg())})
+
