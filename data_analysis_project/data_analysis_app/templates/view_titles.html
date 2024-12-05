@@ -1,61 +1,63 @@
 {% extends 'index.html' %}
 
 {% block content %}
-    
-<table>
-    <thead>
-        <tr>
-            <th>Title</th>
-            <th>Type</th>
-            <th>Release Year</th>
-            <th>Rating</th>
-            <th>Directors</th>
-            <th>Cast</th>
-            <th>Listed In</th>
-            <th>Description</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for title in titles %}
-        <tr>
-            <td>{{ title.title }}</td>
-            <td>{{ title.type }}</td>
-            <td>{{ title.release_year }}</td>
-            <td>{{ title.rating }}</td>
+<div id="loading">
+    <p>Loading data, please wait...</p>
+</div>
 
-            <td>
-                {% for director in title.directors.all %}
-                    {{ director.director_name }}{% if not forloop.last %}, {% endif %}
-                {% empty %}
-                    No directors listed
-                {% endfor %}
-            </td>
-
-            <td>
-                {% for cast in title.casts.all %}
-                    {{ cast.cast_name }}{% if not forloop.last %}, {% endif %}
-                {% empty %}
-                    No cast listed
-                {% endfor %}
-            </td>
-
-            <td>
-                {% for listed_in in title.listed_in.all %}
-                    {{ listed_in.listed_in_name }}{% if not forloop.last %}, {% endif %}
-                {% empty %}
-                    No categories listed
-                {% endfor %}
-            </td>
-
-            <td>{{ title.description }}</td>
-        </tr>
-        {% empty %}
+<div id="table-container" style="display: none;">
+    <table id="titles-table">
+        <thead>
             <tr>
-                <td colspan="8">No titles available.</td>
+                <th>Title</th>
+                <th>Type</th>
+                <th>Release Year</th>
+                <th>Rating</th>
+                <th>Directors</th>
+                <th>Cast</th>
+                <th>Listed In</th>
+                <th>Description</th>
             </tr>
-        {% endfor %}
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            <!-- Data will be populated here -->
+        </tbody>
+    </table>
+</div>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Fetch the data from the API endpoint
+        fetch('/get_titles/')  // Adjust the URL to match your endpoint
+            .then(response => response.json())
+            .then(data => {
+                const tableContainer = document.getElementById('table-container');
+                const loading = document.getElementById('loading');
+                const tableBody = document.querySelector('#titles-table tbody');
+                
+                // Hide loading indicator and show the table
+                loading.style.display = 'none';
+                tableContainer.style.display = 'block';
 
-
+                // Populate table rows with data
+                data.titles.forEach(title => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${title.title}</td>
+                        <td>${title.type}</td>
+                        <td>${title.release_year}</td>
+                        <td>${title.rating}</td>
+                        <td>${title.directors.join(', ') || 'No directors listed'}</td>
+                        <td>${title.casts.join(', ') || 'No cast listed'}</td>
+                        <td>${title.listed_in.join(', ') || 'No categories listed'}</td>
+                        <td>${title.description}</td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+            })
+            .catch(error => {
+                console.error('Error loading data:', error);
+                document.getElementById('loading').innerHTML = '<p>Failed to load data. Please try again later.</p>';
+            });
+    });
+</script>
 {% endblock content %}

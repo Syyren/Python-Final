@@ -1,5 +1,6 @@
 from datetime import datetime
-from models import Title, Director, Cast, ListedIn, TitlesDirectors, TitlesCasts, TitlesListedIns
+import pandas as pd
+from .models import Title, Director, Cast, ListedIn, TitlesDirectors, TitlesCasts, TitlesListedIns
 
 def str_to_list(string : str):
     list = []
