@@ -1,61 +1,166 @@
 {% extends 'index.html' %}
 
 {% block content %}
-    
-<table>
-    <thead>
-        <tr>
-            <th>Title</th>
-            <th>Type</th>
-            <th>Release Year</th>
-            <th>Rating</th>
-            <th>Directors</th>
-            <th>Cast</th>
-            <th>Listed In</th>
-            <th>Description</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for title in titles %}
-        <tr>
-            <td>{{ title.title }}</td>
-            <td>{{ title.type }}</td>
-            <td>{{ title.release_year }}</td>
-            <td>{{ title.rating }}</td>
+<div id="loading">
+    <p>Loading data, please wait...</p>
+</div>
 
-            <td>
-                {% for director in title.directors.all %}
-                    {{ director.director_name }}{% if not forloop.last %}, {% endif %}
-                {% empty %}
-                    No directors listed
-                {% endfor %}
-            </td>
-
-            <td>
-                {% for cast in title.casts.all %}
-                    {{ cast.cast_name }}{% if not forloop.last %}, {% endif %}
-                {% empty %}
-                    No cast listed
-                {% endfor %}
-            </td>
-
-            <td>
-                {% for listed_in in title.listed_in.all %}
-                    {{ listed_in.listed_in_name }}{% if not forloop.last %}, {% endif %}
-                {% empty %}
-                    No categories listed
-                {% endfor %}
-            </td>
-
-            <td>{{ title.description }}</td>
-        </tr>
-        {% empty %}
+<div id="table-container" style="display: none;">
+    <table id="titles-table">
+        <thead>
             <tr>
-                <td colspan="8">No titles available.</td>
+                <th>
+                    <button id="apply-filters">Apply Filters</button>
+                </th>
             </tr>
-        {% endfor %}
-    </tbody>
-</table>
+            <tr>    
+                <th>
+                    <select id="filter-type">
+                        <option value="">All Types</option>
+                    </select>
+                </th>
+                <th><input type="text" id="filter-title" placeholder="Search Title"></th>
+                <th><input type="text" id="filter-directors" placeholder="Search Directors"></th>
+                <th><input type="text" id="filter-casts" placeholder="Search Cast"></th>
+                <th><input type="text" id="filter-country" placeholder="Search Country"></th>
+                <th><input type="text" id="filter-date-added" placeholder="Search Date Added"></th>
+                <th><input type="text" id="filter-release-year" placeholder="Search Release Year"></th>
+                <th>
+                    <select id="filter-rating">
+                        <option value="">All Ratings</option>
+                    </select>
+                </th>
+                <th><input type="text" id="filter-duration" placeholder="Search Duration"></th>
+                <th>
+                    <select id="filter-listed-in">
+                        <option value="">All Categories</option>
+                    </select>
+                </th>
+                <th><input type="text" id="filter-description" placeholder="Search Description"></th>
+            </tr>
+            <tr>
+                <th>Type</th>
+                <th>Title</th>
+                <th>Directors</th>
+                <th>Cast</th>
+                <th>Country</th>
+                <th>Date Added</th>
+                <th>Release Year</th>
+                <th>Rating</th>
+                <th>Duration</th>
+                <th>Listed In</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- data generates here -->
+        </tbody>
+    </table>
+</div>
 
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        //fetch data from endpoint
+        fetch('/get_titles/')
+            .then(response => response.json())
+            .then(data => {
+                const tableContainer = document.getElementById('table-container');
+                const loading = document.getElementById('loading');
+                const tableBody = document.querySelector('#titles-table tbody');
+                const applyFiltersButton = document.getElementById('apply-filters');
 
+                //swaps loading indicator with table
+                loading.style.display = 'none';
+                tableContainer.style.display = 'block';
+
+                //filter arrays
+                let uniqueTypes = new Set();
+                let uniqueRatings = new Set();
+                let uniqueListedIns = new Set();
+
+                //fill table with data
+                data.titles.forEach(title => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${title.type}</td>
+                        <td>${title.title}</td>
+                        <td>${title.directors.join(', ') || 'No directors listed'}</td>
+                        <td>${title.casts.join(', ') || 'No cast listed'}</td>
+                        <td>${title.country}</td>
+                        <td>${title.date_added}</td>
+                        <td>${title.release_year}</td>
+                        <td>${title.rating}</td>
+                        <td>${title.duration}</td>
+                        <td>${title.listed_in.join(', ') || 'No categories listed'}</td>
+                        <td>${title.description}</td>
+                    `;
+                    tableBody.appendChild(row);
+
+                    //getting specific filters
+                    uniqueTypes.add(title.type);
+                    uniqueRatings.add(title.rating);
+                    title.listed_in.forEach(category => uniqueListedIns.add(category));
+                });
+
+                //setting filter dropdown values
+                populateDropdown('filter-type', uniqueTypes);
+                populateDropdown('filter-rating', uniqueRatings);
+                populateDropdown('filter-listed-in', uniqueListedIns);
+
+                //apply filters when the "Apply Filters" button is clicked
+                applyFiltersButton.addEventListener('click', () => {
+                    filterTable();
+                });
+
+                function filterTable() {
+                    const filters = {
+                        type: document.getElementById('filter-type'),
+                        title: document.getElementById('filter-title'),
+                        directors: document.getElementById('filter-directors'),
+                        casts: document.getElementById('filter-casts'),
+                        country: document.getElementById('filter-country'),
+                        dateAdded: document.getElementById('filter-date-added'),
+                        releaseYear: document.getElementById('filter-release-year'),
+                        rating: document.getElementById('filter-rating'),
+                        duration: document.getElementById('filter-duration'),
+                        listedIn: document.getElementById('filter-listed-in'),
+                        description: document.getElementById('filter-description')
+                    };
+
+                    const rows = tableBody.querySelectorAll('tr');
+                    rows.forEach(row => {
+                        let match = true;
+
+                        //maping filter values to column
+                        Object.keys(filters).forEach(key => {
+                            const filterValue = filters[key].value.toLowerCase();
+                            const cellText = row.cells[Object.keys(filters).indexOf(key)].innerText.toLowerCase();
+
+                            if (filterValue && !cellText.includes(filterValue)) {
+                                match = false;
+                            }
+                        });
+
+                        //hide row if filter doesn't match
+                        row.style.display = match ? '' : 'none';
+                    });
+                }
+
+                //create dropdowns dynamically
+                function populateDropdown(id, values) {
+                    const dropdown = document.getElementById(id);
+                    values.forEach(value => {
+                        const option = document.createElement('option');
+                        option.value = value;
+                        option.textContent = value;
+                        dropdown.appendChild(option);
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error loading data:', error);
+                document.getElementById('loading').innerHTML = '<p>Failed to load data. Please try again later.</p>';
+            });
+    });
+</script>
 {% endblock content %}
