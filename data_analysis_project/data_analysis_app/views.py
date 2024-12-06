@@ -30,6 +30,14 @@ def get_titles_data(request):
     titles = Title.objects.prefetch_related('directors', 'casts', 'listed_in').all()
     data = []
     for title in titles:
+        duration = ""
+        if title.type == "Movie":
+            duration = f"{title.duration} Mins"
+        if title.type == "TV Show":
+            s = ""
+            if title.duration > 1:
+                s = "s"
+            duration = f"{title.duration} Season{s}"
         data.append({
             'type': title.type,
             'title': title.title,
@@ -39,7 +47,7 @@ def get_titles_data(request):
             'date_added': title.date_added,
             'release_year': title.release_year,
             'rating': title.rating,
-            'duration': title.duration,
+            'duration': duration,
             'listed_in': [category.listed_in_name for category in title.listed_in.all()],
             'description': title.description,
             })
