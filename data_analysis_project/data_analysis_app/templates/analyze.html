@@ -2,14 +2,18 @@
 
 {% block content %}
 <!--graph selection-->
-<select id="graphSelector" onchange="loadGraph()">
-    <option value="genre_graph">Top 10 Genres</option>
-    <option value="rating_distribution_graph">Content Distribution by Ratings</option>
-    <option value="trend_graph">Trend of Additions Over the Years</option>
-    <option value="top_countries_graph">Top 10 Countries with Most Content</option>
-</select>
+<div class="d-flex align-items-center justify-content-center md-2">
+    <div class="dropdown">
+        <select id="graphSelector" onchange="loadGraph()" class="btn btn-outline-primary dropdown-toggle">
+            <option class="dropdown-item" value="genre_graph">Top 10 Genres</option>
+            <option class="dropdown-item" value="rating_distribution_graph">Content Distribution by Ratings</option>
+            <option class="dropdown-item" value="trend_graph">Trend of Additions Over the Years</option>
+            <option class="dropdown-item" value="top_countries_graph">Top 10 Countries with Most Content</option>
+        </select>
+    </div>
+</div>
 
-<div id="graphContainer">
+<div id="graphContainer" class="d-flex justify-content-center mt-2">
     <!--default genre_graph-->
     {% include 'genre_graph.html' %}
 </div>
@@ -32,10 +36,9 @@ function loadGraph() {
             graphContainer.innerHTML = '';
             
             var img = document.createElement('img');
+            img.classList.add('img-fluid');
             img.src = imageUrl;
             img.alt = selectedGraph;
-            //image responsiveness
-            img.style.maxWidth = '100%';
 
             //adding graph to graph container
             graphContainer.appendChild(img);

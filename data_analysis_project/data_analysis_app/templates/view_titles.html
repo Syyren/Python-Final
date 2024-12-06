@@ -6,31 +6,35 @@
         <thead>
             <tr>    
                 <th>
-                    <div class="d-flex">
-                        <div class="dropdown">
-                            <select id="filter-type" class="btn btn-secondary dropdown-toggle">
+                    <div class="btn-group">
+                        <button id="apply-filters" class="btn btn-outline-primary" style="min-width: 140px;">Apply all Filters</button>
+                        <div class="btn-group">
+                            <select id="filter-type" class="btn btn-outline-primary dropdown-toggle">
                                 <option class="dropdown-item" value="">All Types</option>
                             </select>
                         </div>
-                        <button id="apply-filters" class="btn btn-outline-primary" style="min-width: 120px;">Apply Filters</button>
                     </div>
                 </th>
-                <th><input type="text" id="filter-title" placeholder="Search Titles"></th>
+                <th><input type="text" id="filter-title" style="min-height: 100%;" placeholder="Search Titles"></th>
                 <th><input type="text" id="filter-directors" placeholder="Search Directors"></th>
                 <th><input type="text" id="filter-casts" placeholder="Search Cast"></th>
                 <th><input type="text" id="filter-country" placeholder="Search Country"></th>
                 <th><input type="text" id="filter-date-added" placeholder="Search Date Added"></th>
                 <th><input type="text" id="filter-release-year" placeholder="Search Release Year"></th>
                 <th>
-                    <select id="filter-rating">
-                        <option value="">All Ratings</option>
-                    </select>
+                    <div class="dropdown">
+                        <select id="filter-rating" class="btn btn-outline-primary dropdown-toggle">
+                            <option class="dropdown-item" value="">All Ratings</option>
+                        </select>
+                    </div>
                 </th>
                 <th><input type="text" id="filter-duration" placeholder="Search Duration"></th>
                 <th>
-                    <select id="filter-listed-in">
-                        <option value="">All Categories</option>
-                    </select>
+                    <div class="dropdown">
+                        <select id="filter-listed-in" class="btn btn-outline-primary dropdown-toggle">
+                            <option class="dropdown-item" value="">All Categories</option>
+                        </select>
+                    </div>
                 </th>
                 <th><input type="text" id="filter-description" placeholder="Search Description"></th>
             </tr>
