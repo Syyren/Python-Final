@@ -9,12 +9,15 @@
     <table id="titles-table">
         <thead>
             <tr>
-                <th>Title</th>
                 <th>Type</th>
-                <th>Release Year</th>
-                <th>Rating</th>
+                <th>Title</th>
                 <th>Directors</th>
                 <th>Cast</th>
+                <th>Country</th>
+                <th>Date Added</th>
+                <th>Release Year</th>
+                <th>Rating</th>
+                <th>Duration</th>
                 <th>Listed In</th>
                 <th>Description</th>
             </tr>
@@ -42,12 +45,15 @@
                 data.titles.forEach(title => {
                     const row = document.createElement('tr');
                     row.innerHTML = `
-                        <td>${title.title}</td>
                         <td>${title.type}</td>
-                        <td>${title.release_year}</td>
-                        <td>${title.rating}</td>
+                        <td>${title.title}</td>
                         <td>${title.directors.join(', ') || 'No directors listed'}</td>
                         <td>${title.casts.join(', ') || 'No cast listed'}</td>
+                        <td>${title.country}</td>
+                        <td>${title.date_added}</td>
+                        <td>${title.release_year}</td>
+                        <td>${title.rating}</td>
+                        <td>${title.duration}</td>
                         <td>${title.listed_in.join(', ') || 'No categories listed'}</td>
                         <td>${title.description}</td>
                     `;

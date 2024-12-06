@@ -24,12 +24,15 @@ def get_titles_data(request):
     data = []
     for title in titles:
         data.append({
-            'title': title.title,
             'type': title.type,
-            'release_year': title.release_year,
-            'rating': title.rating,
+            'title': title.title,
             'directors': [director.director_name for director in title.directors.all()],
             'casts': [cast.cast_name for cast in title.casts.all()],
+            'country': title.country,
+            'date_added': title.date_added,
+            'release_year': title.release_year,
+            'rating': title.rating,
+            'duration': title.duration,
             'listed_in': [category.listed_in_name for category in title.listed_in.all()],
             'description': title.description,
             })
