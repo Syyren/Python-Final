@@ -1,6 +1,9 @@
 {% extends 'index.html' %}
 
 {% block content %}
+
+<h1 class="display-1 mb-2 text-center">Netflix Titles Analyzer</h1>
+
 <!--graph selection-->
 <div class="d-flex align-items-center justify-content-center md-2">
     <div class="dropdown">
@@ -36,7 +39,6 @@ function loadGraph() {
             graphContainer.innerHTML = '';
             
             var img = document.createElement('img');
-            img.classList.add('img-fluid');
             img.src = imageUrl;
             img.alt = selectedGraph;
 

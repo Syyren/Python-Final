@@ -33,22 +33,26 @@ def get_titles_data(request):
         duration = ""
         if title.type == "Movie":
             duration = f"{title.duration} Mins"
-        if title.type == "TV Show":
+        elif title.type == "TV Show":
             s = ""
             if title.duration > 1:
                 s = "s"
             duration = f"{title.duration} Season{s}"
+        directors = blank_check([director.director_name for director in title.directors.all()], "Director")
+        cast = blank_check([cast.cast_name for cast in title.casts.all()], "Cast")
+        country = blank_check([title.country], "Country")[0]
+        listed_in = blank_check([category.listed_in_name for category in title.listed_in.all()], "Genre")
         data.append({
             'type': title.type,
             'title': title.title,
-            'directors': [director.director_name for director in title.directors.all()],
-            'casts': [cast.cast_name for cast in title.casts.all()],
-            'country': title.country,
+            'directors': directors,
+            'cast': cast,
+            'country': country,
             'date_added': title.date_added,
             'release_year': title.release_year,
             'rating': title.rating,
             'duration': duration,
-            'listed_in': [category.listed_in_name for category in title.listed_in.all()],
+            'listed_in': listed_in,
             'description': title.description,
             })
     
@@ -58,7 +62,12 @@ def get_titles_data(request):
     response['Pragma'] = 'no-cache'
     response['Expires'] = '0'
     return response
-    
+
+def blank_check(validating_list : list, list_name : str):
+    if validating_list == ["nan"]:
+        validating_list = [f"No {list_name} Supplied"]
+    return validating_list
+
 def view_titles(request):
     return render(request, "view_titles.html")
 

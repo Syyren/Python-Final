@@ -1,6 +1,8 @@
 {% extends 'index.html' %}
 
 {% block content %}
+<h1 class="display-1 mb-2 text-center">Netflix Titles Browser</h1>
+
 <div id="table-container" class="table-responsive">
     <table id="titles-table" class="table table-striped table-hover">
         <thead>
@@ -15,7 +17,7 @@
                         </div>
                     </div>
                 </th>
-                <th><input type="text" id="filter-title" style="min-height: 100%;" placeholder="Search Titles"></th>
+                <th><input type="text" id="filter-title" placeholder="Search Titles"></th>
                 <th><input type="text" id="filter-directors" placeholder="Search Directors"></th>
                 <th><input type="text" id="filter-casts" placeholder="Search Cast"></th>
                 <th><input type="text" id="filter-country" placeholder="Search Country"></th>
@@ -96,7 +98,7 @@
                         <td>${title.directors.join(', ') || 'No directors listed'}</td>
                         <td>
                             <div style="max-height: 10vh; max-width: 20vw; overflow-y: scroll; padding: 5px;">
-                                ${title.casts.join(', ') || 'No cast listed'}
+                                ${title.cast.join(', ') || 'No cast listed'}
                             </div>
                         </td>
                         <td>${title.country}</td>
