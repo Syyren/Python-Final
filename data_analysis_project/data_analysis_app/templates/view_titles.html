@@ -10,6 +10,11 @@
         <thead>
             <tr>
                 <th>
+                    <button id="apply-filters">Apply Filters</button>
+                </th>
+            </tr>
+            <tr>    
+                <th>
                     <select id="filter-type">
                         <option value="">All Types</option>
                     </select>
@@ -62,7 +67,8 @@
                 const tableContainer = document.getElementById('table-container');
                 const loading = document.getElementById('loading');
                 const tableBody = document.querySelector('#titles-table tbody');
-                
+                const applyFiltersButton = document.getElementById('apply-filters');
+
                 //swaps loading indicator with table
                 loading.style.display = 'none';
                 tableContainer.style.display = 'block';
@@ -101,29 +107,26 @@
                 populateDropdown('filter-rating', uniqueRatings);
                 populateDropdown('filter-listed-in', uniqueListedIns);
 
-                //setting textbox filters
-                const filters = {
-                    type: document.getElementById('filter-type'),
-                    title: document.getElementById('filter-title'),
-                    directors: document.getElementById('filter-directors'),
-                    casts: document.getElementById('filter-casts'),
-                    country: document.getElementById('filter-country'),
-                    dateAdded: document.getElementById('filter-date-added'),
-                    releaseYear: document.getElementById('filter-release-year'),
-                    rating: document.getElementById('filter-rating'),
-                    duration: document.getElementById('filter-duration'),
-                    listedIn: document.getElementById('filter-listed-in'),
-                    description: document.getElementById('filter-description')
-                };
-
-                //map filter values to inputs
-                Object.values(filters).forEach(input => {
-                    input.addEventListener('input', () => {
-                        filterTable();
-                    });
+                //apply filters when the "Apply Filters" button is clicked
+                applyFiltersButton.addEventListener('click', () => {
+                    filterTable();
                 });
 
                 function filterTable() {
+                    const filters = {
+                        type: document.getElementById('filter-type'),
+                        title: document.getElementById('filter-title'),
+                        directors: document.getElementById('filter-directors'),
+                        casts: document.getElementById('filter-casts'),
+                        country: document.getElementById('filter-country'),
+                        dateAdded: document.getElementById('filter-date-added'),
+                        releaseYear: document.getElementById('filter-release-year'),
+                        rating: document.getElementById('filter-rating'),
+                        duration: document.getElementById('filter-duration'),
+                        listedIn: document.getElementById('filter-listed-in'),
+                        description: document.getElementById('filter-description')
+                    };
+
                     const rows = tableBody.querySelectorAll('tr');
                     rows.forEach(row => {
                         let match = true;
