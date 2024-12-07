@@ -141,7 +141,7 @@ def rating_distribution_graph(request):
     #clearing graph then querying data
     plt.clf()
     titles = Title.objects.all()
-    ratings = [title.rating for title in titles if title.rating]
+    ratings = [title.rating for title in titles if title.rating and title.rating != "nan"]
 
     #grabbing ratings data
     rating_counts = {rating: ratings.count(rating) for rating in set(ratings)}

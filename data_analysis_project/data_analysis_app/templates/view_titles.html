@@ -76,6 +76,7 @@
         const rowsPerPage = 10;
         let currentPage = 1;
         let titlesData = [];
+        let filteredData = [];
 
         //fetching data from the API
         fetch('/get_titles/')
@@ -92,10 +93,11 @@
                 tableContainer.style.display = 'block';
 
                 titlesData = data.titles;
-                renderTable(titlesData, currentPage);
-                createPaginationControls(Math.ceil(titlesData.length / rowsPerPage));
+                filteredData = titlesData;
+                renderTable(filteredData, currentPage);
+                createPaginationControls(Math.ceil(filteredData.length / rowsPerPage));
 
-                // filter ing arrays
+                // filtering arrays
                 let uniqueTypes = new Set();
                 let uniqueRatings = new Set();
                 let uniqueListedIns = new Set();
@@ -107,14 +109,12 @@
                     title.listed_in.forEach(category => uniqueListedIns.add(category));
                 });
 
-                populateDropdown('filter-type', Array.from(uniqueTypes));
-                populateDropdown('filter-rating', Array.from(uniqueRatings).sort());
-                populateDropdown('filter-listed-in', Array.from(uniqueListedIns).sort());
+                populateFilterOptions(titlesData);
 
                 //applying filters
                 applyFiltersButton.addEventListener('click', () => {
-                    const filteredData = filterTable(titlesData);
-                    currentPage = 1; // Reset to the first page
+                    currentPage = 1; // resets to the first page
+                    filteredData = filterTable(titlesData);
                     renderTable(filteredData, currentPage);
                     createPaginationControls(Math.ceil(filteredData.length / rowsPerPage));
                 });
@@ -164,7 +164,7 @@
                     prevButton.addEventListener('click', () => {
                         if (currentPage > 1) {
                             currentPage--;
-                            renderTable(titlesData, currentPage);
+                            renderTable(filteredData, currentPage);
                             createPaginationControls(totalPages);
                         }
                     });
@@ -180,7 +180,7 @@
                         button.className = `btn btn-outline-primary mx-1 ${i === currentPage ? 'active' : ''}`;
                         button.addEventListener('click', () => {
                             currentPage = i;
-                            renderTable(titlesData, currentPage);
+                            renderTable(filteredData, currentPage);
                             createPaginationControls(totalPages);
                         });
                         paginationControls.appendChild(button);
@@ -194,7 +194,7 @@
                     nextButton.addEventListener('click', () => {
                         if (currentPage < totalPages) {
                             currentPage++;
-                            renderTable(titlesData, currentPage);
+                            renderTable(filteredData, currentPage);
                             createPaginationControls(totalPages);
                         }
                     });
@@ -234,6 +234,23 @@
                             return cellValue.includes(filterValue);
                         });
                     });
+                }
+
+                //populates the filters w relevant and sorted data
+                function populateFilterOptions(data) {
+                    let uniqueTypes = new Set();
+                    let uniqueRatings = new Set();
+                    let uniqueListedIns = new Set();
+
+                    data.forEach(title => {
+                        uniqueTypes.add(title.type);
+                        uniqueRatings.add(String(title.rating).trim());
+                        title.listed_in.forEach(category => uniqueListedIns.add(category));
+                    });
+
+                    populateDropdown('filter-type', Array.from(uniqueTypes));
+                    populateDropdown('filter-rating', Array.from(uniqueRatings).sort());
+                    populateDropdown('filter-listed-in', Array.from(uniqueListedIns).sort());
                 }
 
                 //populate dropdowns with unique values
