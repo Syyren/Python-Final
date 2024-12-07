@@ -213,7 +213,7 @@
                         releaseYear: document.getElementById('filter-release-year').value.toLowerCase(),
                         rating: document.getElementById('filter-rating').value.toLowerCase(),
                         duration: document.getElementById('filter-duration').value.toLowerCase(),
-                        listedIn: document.getElementById('filter-listed-in').value.toLowerCase(),
+                        listed_in: document.getElementById('filter-listed-in').value.toLowerCase(),
                         description: document.getElementById('filter-description').value.toLowerCase()
                     };
 
@@ -227,7 +227,7 @@
                                 return String(title[key]).toLowerCase() === filterValue;
                             }
 
-                            const cellValue = key === 'listedIn' ?
+                            const cellValue = key === 'listed_in' ?
                                 title[key].join(', ').toLowerCase() :
                                 String(title[key]).toLowerCase();
 
