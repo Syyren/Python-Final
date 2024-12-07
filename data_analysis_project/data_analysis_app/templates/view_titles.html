@@ -111,7 +111,7 @@
                 populateDropdown('filter-rating', Array.from(uniqueRatings).sort());
                 populateDropdown('filter-listed-in', Array.from(uniqueListedIns).sort());
 
-                // Apply filters
+                //applying filters
                 applyFiltersButton.addEventListener('click', () => {
                     const filteredData = filterTable(titlesData);
                     currentPage = 1; // Reset to the first page
@@ -119,9 +119,9 @@
                     createPaginationControls(Math.ceil(filteredData.length / rowsPerPage));
                 });
 
-                // Render table rows for the current page
+                //rendering table rows for the current page
                 function renderTable(data, page) {
-                    tableBody.innerHTML = ''; // Clear previous rows
+                    tableBody.innerHTML = ''; //clears the previous rows
                     const start = (page - 1) * rowsPerPage;
                     const end = start + rowsPerPage;
 
