@@ -17,45 +17,25 @@
 </div>
 
 <div id="graphContainer" class="d-flex justify-content-center mt-2">
-    <!--default genre_graph-->
-    {% include 'genre_graph.html' %}
 </div>
 
 <script>
-function loadGraph() {
-    var selectedGraph = document.getElementById("graphSelector").value;  // Get the selected graph option
+    function loadGraph() {
+        const selectedGraph = document.getElementById("graphSelector").value;
+        const graphContainer = document.getElementById("graphContainer");
     
-    //uses option value to call graph from api
-    var graphUrl = `/${selectedGraph}/`;
-
-    //grabbing graph image
-    fetch(graphUrl)
-        .then(response => response.blob())
-        .then(imageBlob => {
-            var imageUrl = URL.createObjectURL(imageBlob);
-            var graphContainer = document.getElementById('graphContainer');
-            
-            //clearing old graph before replacing
-            graphContainer.innerHTML = '';
-            
-            var img = document.createElement('img');
-            img.src = imageUrl;
-            img.alt = selectedGraph;
-
-            //adding graph to graph container
-            graphContainer.appendChild(img);
-        })
-        .catch(error => {
-            console.error('Error fetching graph:', error);
-        });
-}
-
-
-//fixing issue caused by reloading page
-window.onload = function() {
-    //setting dropdown to be genre graph because it's the one that loads in first
-    document.getElementById("graphSelector").value = "genre_graph";
-};
-
+        //generating graph with api call
+        graphContainer.innerHTML = `
+            <img src="/${selectedGraph}/" alt="${selectedGraph}" class="img-fluid rounded">
+        `;
+    }
+    
+    //graph bugs when reloading the page, so geenrating the graph on page load and default is genre_graph for no particular reason except it's first
+    window.onload = function() {
+        document.getElementById("graphSelector").value = "genre_graph";
+        loadGraph();
+    };
+    
 </script>
+
 {% endblock content %}
