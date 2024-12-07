@@ -2,6 +2,7 @@ from datetime import datetime
 from .models import Title, Director, Cast, ListedIn, TitlesDirectors, TitlesCasts, TitlesListedIns
 import pandas as pd
 
+#converts a string like 'a, b, c' to a list like ['a', 'b', 'c']
 def str_to_list(string : str):
     list = []
     if string != None:
@@ -9,12 +10,14 @@ def str_to_list(string : str):
         list = [item.strip() for item in list]
     return list
 
+#converts a string formatted in the specified way to a datetime value
 def str_to_date(string : str):
     date = None
     if string and string != "nan":
          date = datetime.strptime(string.strip(), "%B %d, %Y").date()
     return date
 
+#pops out the letters from a duration so the number can be worked with
 def convert_duration(string : str): 
     list = string.split(" ")
     try:
