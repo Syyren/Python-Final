@@ -222,6 +222,11 @@
                             const filterValue = filters[key];
                             if (!filterValue) return true;
 
+                            if (key === 'rating') {
+                                //use strict filtering for rating
+                                return String(title[key]).toLowerCase() === filterValue;
+                            }
+
                             const cellValue = key === 'listedIn' ?
                                 title[key].join(', ').toLowerCase() :
                                 String(title[key]).toLowerCase();

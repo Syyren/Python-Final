@@ -6,7 +6,6 @@ import io
 
 from django.http import HttpResponse
 from django.http import JsonResponse
-from django.utils.decorators import decorator_from_middleware
 from django.views.decorators.cache import never_cache
 from django.shortcuts import render
 from django.utils.safestring import mark_safe
@@ -60,7 +59,7 @@ def get_titles_data(request):
             'description': title.description,
             })
     
-    #disable caching - remove after developemnt
+    #disable caching
     response = JsonResponse({'titles': data})
     response['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
     response['Pragma'] = 'no-cache'
