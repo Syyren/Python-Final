@@ -117,14 +117,19 @@
 
                     //getting specific filters
                     uniqueTypes.add(title.type);
-                    uniqueRatings.add(title.rating);
+                    uniqueRatings.add(String(title.rating).trim());
                     title.listed_in.forEach(category => uniqueListedIns.add(category));
                 });
+                
+                const sortRatings = Array.from(uniqueRatings);
+                sortRatings.sort();
+                const sortListedIns = Array.from(uniqueListedIns);
+                sortListedIns.sort();
 
                 //setting filter dropdown values
                 populateDropdown('filter-type', uniqueTypes);
-                populateDropdown('filter-rating', uniqueRatings);
-                populateDropdown('filter-listed-in', uniqueListedIns);
+                populateDropdown('filter-rating', sortRatings);
+                populateDropdown('filter-listed-in', sortListedIns);
 
                 //apply filters when the "Apply Filters" button is clicked
                 applyFiltersButton.addEventListener('click', () => {

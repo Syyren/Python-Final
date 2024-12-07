@@ -41,16 +41,20 @@ def get_titles_data(request):
         directors = blank_check([director.director_name for director in title.directors.all()], "Director")
         cast = blank_check([cast.cast_name for cast in title.casts.all()], "Cast")
         country = blank_check([title.country], "Country")[0]
+        date_added = blank_check([title.date_added], "Date")
+        release_year = blank_check([title.release_year], "Date")
+        rating = blank_check([title.rating], "Rating")
         listed_in = blank_check([category.listed_in_name for category in title.listed_in.all()], "Genre")
+
         data.append({
             'type': title.type,
             'title': title.title,
             'directors': directors,
             'cast': cast,
             'country': country,
-            'date_added': title.date_added,
-            'release_year': title.release_year,
-            'rating': title.rating,
+            'date_added': date_added,
+            'release_year': release_year,
+            'rating': rating,
             'duration': duration,
             'listed_in': listed_in,
             'description': title.description,
@@ -64,7 +68,7 @@ def get_titles_data(request):
     return response
 
 def blank_check(validating_list : list, list_name : str):
-    if validating_list == ["nan"]:
+    if validating_list == ["nan"] or validating_list == ["null"] or validating_list == None:
         validating_list = [f"No {list_name} Supplied"]
     return validating_list
 
