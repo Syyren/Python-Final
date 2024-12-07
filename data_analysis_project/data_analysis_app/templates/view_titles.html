@@ -68,109 +68,170 @@
     </div>
 </div>
 
-<!--JavaScript block that fetches a JSON from our API to dynamically render our data to the page-->
+<div id="pagination-controls" class="d-flex justify-content-center mt-3 mb-3"></div>
+
+<!--JavaScript block that fetches a JSON from our API to dynamically render our data to the page, also implements sorting and pagination-->
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        //fetch data from endpoint
+        const rowsPerPage = 10;
+        let currentPage = 1;
+        let titlesData = [];
+
+        //fetching data from the API
         fetch('/get_titles/')
             .then(response => response.json())
             .then(data => {
                 const tableContainer = document.getElementById('table-container');
                 const loading = document.getElementById('loading');
                 const tableBody = document.querySelector('#titles-table tbody');
+                const paginationControls = document.getElementById('pagination-controls');
                 const applyFiltersButton = document.getElementById('apply-filters');
 
-                //swaps loading indicator with table
+                //hides the loading indicator and displays the table
                 loading.style.display = 'none';
                 tableContainer.style.display = 'block';
 
-                //filter arrays
+                titlesData = data.titles;
+                renderTable(titlesData, currentPage);
+                createPaginationControls(Math.ceil(titlesData.length / rowsPerPage));
+
+                // filter ing arrays
                 let uniqueTypes = new Set();
                 let uniqueRatings = new Set();
                 let uniqueListedIns = new Set();
 
-                //fill table with data
-                data.titles.forEach(title => {
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td>${title.type}</td>
-                        <td>${title.title}</td>
-                        <td>${title.directors.join(', ') || 'No directors listed'}</td>
-                        <td>
-                            <div style="max-height: 10vh; max-width: 20vw; overflow-y: scroll; padding: 5px;">
-                                ${title.cast.join(', ') || 'No cast listed'}
-                            </div>
-                        </td>
-                        <td>${title.country}</td>
-                        <td>${title.date_added}</td>
-                        <td>${title.release_year}</td>
-                        <td>${title.rating}</td>
-                        <td>${title.duration}</td>
-                        <td>${title.listed_in.join(', ') || 'No categories listed'}</td>
-                        <td>
-                            <div style="max-height: 10vh; max-width: 20vw; overflow-y: scroll; padding: 5px;">
-                                ${title.description}
-                            </div>
-                        </td>
-                    `;
-                    tableBody.appendChild(row);
-
-                    //getting specific filters
+                //populating filter dropdowns and sorting them
+                titlesData.forEach(title => {
                     uniqueTypes.add(title.type);
                     uniqueRatings.add(String(title.rating).trim());
                     title.listed_in.forEach(category => uniqueListedIns.add(category));
                 });
-                
-                const sortRatings = Array.from(uniqueRatings);
-                sortRatings.sort();
-                const sortListedIns = Array.from(uniqueListedIns);
-                sortListedIns.sort();
 
-                //setting filter dropdown values
-                populateDropdown('filter-type', uniqueTypes);
-                populateDropdown('filter-rating', sortRatings);
-                populateDropdown('filter-listed-in', sortListedIns);
+                populateDropdown('filter-type', Array.from(uniqueTypes));
+                populateDropdown('filter-rating', Array.from(uniqueRatings).sort());
+                populateDropdown('filter-listed-in', Array.from(uniqueListedIns).sort());
 
-                //apply filters when the "Apply Filters" button is clicked
+                // Apply filters
                 applyFiltersButton.addEventListener('click', () => {
-                    filterTable();
+                    const filteredData = filterTable(titlesData);
+                    currentPage = 1; // Reset to the first page
+                    renderTable(filteredData, currentPage);
+                    createPaginationControls(Math.ceil(filteredData.length / rowsPerPage));
                 });
 
-                function filterTable() {
-                    const filters = {
-                        type: document.getElementById('filter-type'),
-                        title: document.getElementById('filter-title'),
-                        directors: document.getElementById('filter-directors'),
-                        casts: document.getElementById('filter-casts'),
-                        country: document.getElementById('filter-country'),
-                        dateAdded: document.getElementById('filter-date-added'),
-                        releaseYear: document.getElementById('filter-release-year'),
-                        rating: document.getElementById('filter-rating'),
-                        duration: document.getElementById('filter-duration'),
-                        listedIn: document.getElementById('filter-listed-in'),
-                        description: document.getElementById('filter-description')
-                    };
+                // Render table rows for the current page
+                function renderTable(data, page) {
+                    tableBody.innerHTML = ''; // Clear previous rows
+                    const start = (page - 1) * rowsPerPage;
+                    const end = start + rowsPerPage;
 
-                    const rows = tableBody.querySelectorAll('tr');
-                    rows.forEach(row => {
-                        let match = true;
-
-                        //maping filter values to column
-                        Object.keys(filters).forEach(key => {
-                            const filterValue = filters[key].value.toLowerCase();
-                            const cellText = row.cells[Object.keys(filters).indexOf(key)].innerText.toLowerCase();
-
-                            if (filterValue && !cellText.includes(filterValue)) {
-                                match = false;
-                            }
-                        });
-
-                        //hide row if filter doesn't match
-                        row.style.display = match ? '' : 'none';
+                    data.slice(start, end).forEach(title => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${title.type}</td>
+                            <td>${title.title}</td>
+                            <td>${title.directors.join(', ') || 'No directors listed'}</td>
+                            <td>
+                                <div style="max-height: 10vh; max-width: 20vw; overflow-y: scroll; padding: 5px;">
+                                    ${title.cast.join(', ') || 'No cast listed'}
+                                </div>
+                            </td>
+                            <td>${title.country}</td>
+                            <td>${title.date_added}</td>
+                            <td>${title.release_year}</td>
+                            <td>${title.rating}</td>
+                            <td>${title.duration}</td>
+                            <td>${title.listed_in.join(', ') || 'No categories listed'}</td>
+                            <td>
+                                <div style="max-height: 10vh; max-width: 20vw; overflow-y: scroll; padding: 5px;">
+                                    ${title.description}
+                                </div>
+                            </td>
+                        `;
+                        tableBody.appendChild(row);
                     });
                 }
 
-                //create dropdowns dynamically
+                //creating pagination controls with Previous, Next, and 5 page numbers
+                function createPaginationControls(totalPages) {
+                    paginationControls.innerHTML = ''; // Clear previous controls
+
+                    //adds a "Previous" button
+                    const prevButton = document.createElement('button');
+                    prevButton.textContent = 'Previous';
+                    prevButton.className = 'btn btn-outline-primary mx-1';
+                    prevButton.disabled = currentPage === 1; //disabled if on the first page
+                    prevButton.addEventListener('click', () => {
+                        if (currentPage > 1) {
+                            currentPage--;
+                            renderTable(titlesData, currentPage);
+                            createPaginationControls(totalPages);
+                        }
+                    });
+                    paginationControls.appendChild(prevButton);
+
+                    //determines the range of pages to display
+                    const startPage = Math.max(1, currentPage - 1);
+                    const endPage = Math.min(totalPages, currentPage + 1);
+
+                    for (let i = startPage; i <= endPage; i++) {
+                        const button = document.createElement('button');
+                        button.textContent = i;
+                        button.className = `btn btn-outline-primary mx-1 ${i === currentPage ? 'active' : ''}`;
+                        button.addEventListener('click', () => {
+                            currentPage = i;
+                            renderTable(titlesData, currentPage);
+                            createPaginationControls(totalPages);
+                        });
+                        paginationControls.appendChild(button);
+                    }
+
+                    //adds a "Next" button
+                    const nextButton = document.createElement('button');
+                    nextButton.textContent = 'Next';
+                    nextButton.className = 'btn btn-outline-primary mx-1';
+                    nextButton.disabled = currentPage === totalPages; //disabled if on the last page
+                    nextButton.addEventListener('click', () => {
+                        if (currentPage < totalPages) {
+                            currentPage++;
+                            renderTable(titlesData, currentPage);
+                            createPaginationControls(totalPages);
+                        }
+                    });
+                    paginationControls.appendChild(nextButton);
+                }
+
+                //filters the table based on user inputs
+                function filterTable(data) {
+                    const filters = {
+                        type: document.getElementById('filter-type').value.toLowerCase(),
+                        title: document.getElementById('filter-title').value.toLowerCase(),
+                        directors: document.getElementById('filter-directors').value.toLowerCase(),
+                        casts: document.getElementById('filter-casts').value.toLowerCase(),
+                        country: document.getElementById('filter-country').value.toLowerCase(),
+                        dateAdded: document.getElementById('filter-date-added').value.toLowerCase(),
+                        releaseYear: document.getElementById('filter-release-year').value.toLowerCase(),
+                        rating: document.getElementById('filter-rating').value.toLowerCase(),
+                        duration: document.getElementById('filter-duration').value.toLowerCase(),
+                        listedIn: document.getElementById('filter-listed-in').value.toLowerCase(),
+                        description: document.getElementById('filter-description').value.toLowerCase()
+                    };
+
+                    return data.filter(title => {
+                        return Object.keys(filters).every(key => {
+                            const filterValue = filters[key];
+                            if (!filterValue) return true;
+
+                            const cellValue = key === 'listedIn' ?
+                                title[key].join(', ').toLowerCase() :
+                                String(title[key]).toLowerCase();
+
+                            return cellValue.includes(filterValue);
+                        });
+                    });
+                }
+
+                //populate dropdowns with unique values
                 function populateDropdown(id, values) {
                     const dropdown = document.getElementById(id);
                     values.forEach(value => {
@@ -187,4 +248,6 @@
             });
     });
 </script>
+
+
 {% endblock content %}
