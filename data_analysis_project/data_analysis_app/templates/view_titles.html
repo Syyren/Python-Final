@@ -44,7 +44,7 @@
                 <th>Type</th>
                 <th>Title</th>
                 <th>Directors</th>
-                <th>Cast</th>
+                <th>Cast Members</th>
                 <th>Country</th>
                 <th>Date Added</th>
                 <th>Release Year</th>
@@ -207,14 +207,14 @@
                     const filters = {
                         type: document.getElementById('filter-type').value.toLowerCase(),
                         title: document.getElementById('filter-title').value.toLowerCase(),
-                        directors: document.getElementById('filter-directors').value.toLowerCase(),
-                        casts: document.getElementById('filter-casts').value.toLowerCase(),
+                        director: document.getElementById('filter-directors').value.toLowerCase(),
+                        cast: document.getElementById('filter-casts').value.toLowerCase(),
                         country: document.getElementById('filter-country').value.toLowerCase(),
-                        dateAdded: document.getElementById('filter-date-added').value.toLowerCase(),
-                        releaseYear: document.getElementById('filter-release-year').value.toLowerCase(),
+                        date_added: document.getElementById('filter-date-added').value.toLowerCase(),
+                        release_year: document.getElementById('filter-release-year').value.toLowerCase(),
                         rating: document.getElementById('filter-rating').value.toLowerCase(),
                         duration: document.getElementById('filter-duration').value.toLowerCase(),
-                        listedIn: document.getElementById('filter-listed-in').value.toLowerCase(),
+                        listed_in: document.getElementById('filter-listed-in').value.toLowerCase(),
                         description: document.getElementById('filter-description').value.toLowerCase()
                     };
 
@@ -223,7 +223,12 @@
                             const filterValue = filters[key];
                             if (!filterValue) return true;
 
-                            const cellValue = key === 'listedIn' ?
+                            if (key === 'rating') {
+                                //use strict filtering for rating
+                                return String(title[key]).toLowerCase() === filterValue;
+                            }
+
+                            const cellValue = key === 'listed_in' ?
                                 title[key].join(', ').toLowerCase() :
                                 String(title[key]).toLowerCase();
 
